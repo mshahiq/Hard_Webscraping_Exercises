@@ -7,15 +7,13 @@ import numpy as np
 
 def temperature_conversion(Fahrenheit):
     temperature_in_celsius = (Fahrenheit - 32) * (5/9)
-
     return temperature_in_celsius
-
-
 
 day_of_the_week = []
 low_temperature = []
 high_temperature = []
-description = []
+day_description = []
+night_description = []
 
 url = 'https://weather.com/weather/tenday/l/San+Francisco+CA?canonicalCityId=dfdaba8cbe3a4d12a8796e1f7b1ccc7174b4b0a2d5ddb1c8566ae9f154fa638c';
 pth = 'chromedriver.exe'
@@ -55,6 +53,7 @@ for i in range(1,11):
     int_day_temperature = int(day_digits)
 
     day_temperature_in_C = temperature_conversion(int_day_temperature)
+    day_temperature_in_C = round(day_temperature_in_C,1)
     high_temperature.append(day_temperature_in_C)
 
     night_temperatures = night_temperatures.text
@@ -63,11 +62,17 @@ for i in range(1,11):
     int_night_temperature = int(night_digits)
 
     night_temperature_in_C = temperature_conversion(int_night_temperature)
+    night_temperature_in_C = round(night_temperature_in_C,1)
     low_temperature.append(night_temperature_in_C)
 
-    day_description = get_day_description.text
-    description.append(day_description)
-        
+    day_description_str = get_day_description.text
+    day_description_str.split('.')[0]
+    day_description.append(day_description_str)
+    
+    night_description_str = get_night_description.text
+    night_description_str.split('.')[0]
+    night_description.append(night_description_str)
+
     sleep(5)
     driver.find_element_by_css_selector(f'#detailIndex{i} > summary > div > svg').click()
     sleep(4)
@@ -75,8 +80,8 @@ for i in range(1,11):
 
 #########################################       SAVING IT INTO PANDAS DATAFRAME        #######################################################################
 
-data = {'Days':day_of_the_week,'High Temperature in C':high_temperature,'Low Temperature in C':low_temperature,'Description':description}
-dates_from_08 = pd.date_range('2022-02-09',periods=10,freq='D')
+data = {'Days':day_of_the_week,'Low Temperature in C':low_temperature,'Night Description':night_description,'High Temperature in C':high_temperature,'Day Description':day_description,}
+dates_from_08 = pd.date_range('2022-02-08',periods=10,freq='D')
 
 df = pd.DataFrame(data,index=dates_from_08)
     
