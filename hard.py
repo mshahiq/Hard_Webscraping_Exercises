@@ -34,8 +34,7 @@ for i in range(1,11):
     day_date = driver.find_element_by_xpath(f'/html/body/div[1]/main/div[2]/main/div[1]/section/div[2]/details[{i}]/div/div[1]/h3/span')
     sleep(2)
     day_temperatures = driver.find_element_by_xpath(f'/html/body/div[1]/main/div[2]/main/div[1]/section/div[2]/details[{i}]/div/div[1]/div/div[1]/span')
-
-                                                            
+                                                
     sleep(2)
     night_temperatures = driver.find_element_by_xpath(f'/html/body/div[1]/main/div[2]/main/div[1]/section/div[2]/details[{i}]/div/div[3]/div/div[1]/span')
     sleep(2)
@@ -66,12 +65,12 @@ for i in range(1,11):
     low_temperature.append(night_temperature_in_C)
 
     day_description_str = get_day_description.text
-    day_description_str.split('.')[0]
-    day_description.append(day_description_str)
+    day_first,day_second,day_third = day_description_str.partition('.')
+    day_description.append(day_first)
     
     night_description_str = get_night_description.text
-    night_description_str.split('.')[0]
-    night_description.append(night_description_str)
+    night_first,night_second,night_third = night_description_str.partition('.')
+    night_description.append(night_first)
 
     sleep(5)
     driver.find_element_by_css_selector(f'#detailIndex{i} > summary > div > svg').click()
@@ -80,7 +79,7 @@ for i in range(1,11):
 
 #########################################       SAVING IT INTO PANDAS DATAFRAME        #######################################################################
 
-data = {'Days':day_of_the_week,'Low Temperature in C':low_temperature,'Night Description':night_description,'High Temperature in C':high_temperature,'Day Description':day_description,}
+data = {'Days':day_of_the_week,'Low Temperature in C':low_temperature,'Night Description':night_description,'High Temperature in C':high_temperature,'Day Description':day_description}
 dates_from_08 = pd.date_range('2022-02-08',periods=10,freq='D')
 
 df = pd.DataFrame(data,index=dates_from_08)
